@@ -12,10 +12,8 @@ function Edge({ position, color, onClick }) {
 
 const styles = {
   edge: {
-    width: "100%",
-    height: "100%",
     position: "absolute",
-    //border: "1px solid black",
+    cursor: "pointer", // Added cursor pointer style
   },
   top: {
     top: 0,
@@ -24,7 +22,7 @@ const styles = {
     height: "5px",
   },
   bottom: {
-    bottom: "-5px", // Overlaps the cell below
+    bottom: 0,
     left: 0,
     right: 0,
     height: "5px",
@@ -38,7 +36,7 @@ const styles = {
   right: {
     top: 0,
     bottom: 0,
-    right: "-5px", // Overlaps the cell to the right
+    right: 0,
     width: "5px",
   },
 };

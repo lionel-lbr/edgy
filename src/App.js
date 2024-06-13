@@ -5,11 +5,18 @@ import Board from "./Board";
 
 function App() {
   return (
-    <div className="App">
-      <h1>16x16 Grid Board</h1>
+    <div className="App" style={styles.appContainer}>
       <Board />
     </div>
   );
 }
 
+const styles = {
+  appContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+  },
+};
 export default App;

@@ -1,29 +1,58 @@
-// src/BoardComponent.js
+// src/Board.js
 import React, { useState } from "react";
 import Cell from "./Cell";
+const DEFAULT_COLOR = "grey";
 
 function Board() {
   const rows = 16;
   const cols = 16;
 
   // Initialize edge colors state
-  const initialEdgeColors = Array.from({ length: rows }, () =>
+  const initialCellStates = Array.from({ length: rows }, () =>
     Array.from({ length: cols }, () => ({
-      top: "gray",
-      bottom: "gray",
-      left: "gray",
-      right: "gray",
+      top: DEFAULT_COLOR,
+      bottom: DEFAULT_COLOR,
+      left: DEFAULT_COLOR,
+      right: DEFAULT_COLOR,
+      closed: false,
+      color: "transparent",
     }))
   );
 
-  const [edgeColors, setEdgeColors] = useState(initialEdgeColors);
+  const [cellStates, setCellStates] = useState(initialCellStates);
   const [currentColor, setCurrentColor] = useState("blue");
+
+  const shouldClosed = (cell) => {
+    if (
+      cell.top !== DEFAULT_COLOR &&
+      cell.bottom !== DEFAULT_COLOR &&
+      cell.left !== DEFAULT_COLOR &&
+      cell.right !== DEFAULT_COLOR &&
+      !cell.closed
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const isSelected = (row, col, position) => {
+    const cell = cellStates[row][col];
+    if (cell[position] !== DEFAULT_COLOR) {
+      return true;
+    }
+    return false;
+  };
 
   const handleEdgeClick = (row, col, position) => {
     console.log(`handleClick: ${row}-${col}-${position}`);
+
+    // Prevent changing the color if the edge is already colored
+    if (isSelected(row, col, position)) {
+      return;
+    }
     const newColor = currentColor;
 
-    const newEdgeColors = edgeColors.map((_row, rowIndex) =>
+    const newCellStates = cellStates.map((_row, rowIndex) =>
       _row.map((_cell, colIndex) => {
         if (rowIndex === row && colIndex === col) {
           return { ..._cell, [position]: newColor };
@@ -47,8 +76,21 @@ function Board() {
       })
     );
 
-    setEdgeColors(newEdgeColors);
-    setCurrentColor(currentColor === "blue" ? "red" : "blue");
+    let newClosedCount = 0;
+    const closedCellState = newCellStates.map((_row) =>
+      _row.map((_cell) => {
+        if (shouldClosed(_cell)) {
+          newClosedCount++;
+          return { ..._cell, closed: true, color: currentColor };
+        }
+        return _cell;
+      })
+    );
+
+    setCellStates(closedCellState);
+    // change color if we didn't close a cell
+    if (newClosedCount === 0)
+      setCurrentColor(currentColor === "blue" ? "red" : "blue");
   };
 
   const generateGrid = () => {
@@ -61,7 +103,7 @@ function Board() {
             key={`${row}-${col}`}
             row={row}
             col={col}
-            edgeColors={edgeColors[row][col]}
+            cellState={cellStates[row][col]}
             onEdgeClick={handleEdgeClick}
           />
         );
@@ -75,10 +117,21 @@ function Board() {
     return grid;
   };
 
-  return <div style={styles.board}>{generateGrid()}</div>;
+  // Updated return statement to include boardContainer
+  return (
+    <div style={styles.boardContainer}>
+      <div style={styles.board}>{generateGrid()}</div>
+    </div>
+  );
 }
 
 const styles = {
+  boardContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+  },
   board: {
     display: "flex",
     flexDirection: "column",
