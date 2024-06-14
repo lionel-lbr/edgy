@@ -1,30 +1,25 @@
 // src/Board.js
-import React, { useState } from "react";
+import React from "react";
 import Cell from "./Cell";
 
-import gameState from "../state/game.state";
-
-function Board() {
-  const rows = 16;
-  const cols = 16;
-
-  const [toggle, setToggle] = useState(true);
-  // const [currentColor, setCurrentColor] = useState("blue");
+function Board(props) {
+  const { gameState, gameTick } = props;
 
   const handleEdgeClick = (row, col, position) => {
     console.log(`handleClick: ${row}-${col}-${position}`);
 
-    if (gameState.isEdgeSelected(row, col, position)) return;
+    if (!gameState.isEdgeSelected(row, col, position)) {
+      gameState.setEdge(row, col, position);
+    }
 
-    gameState.setEdge(row, col, position);
-    setToggle(!toggle); // toggle to trigger refresh
+    gameTick();
   };
 
   const generateGrid = () => {
     let grid = [];
-    for (let row = 0; row < rows; row++) {
+    for (let row = 0; row < gameState.rowsCount; row++) {
       let rowElements = [];
-      for (let col = 0; col < cols; col++) {
+      for (let col = 0; col < gameState.colsCount; col++) {
         const cell = gameState.state[row][col];
         console.log(cell);
         rowElements.push(
@@ -34,8 +29,8 @@ function Board() {
             col={col}
             cellState={cell}
             onEdgeClick={handleEdgeClick}
-            rows={rows}
-            cols={cols}
+            rows={gameState.rowsCount}
+            cols={gameState.colsCount}
           />
         );
       }
@@ -49,20 +44,10 @@ function Board() {
   };
 
   // Updated return statement to include boardContainer
-  return (
-    <div style={styles.boardContainer}>
-      <div style={styles.board}>{generateGrid()}</div>
-    </div>
-  );
+  return <div style={styles.board}>{generateGrid()}</div>;
 }
 
 const styles = {
-  boardContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-  },
   board: {
     display: "flex",
     flexDirection: "column",

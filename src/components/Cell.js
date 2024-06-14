@@ -29,9 +29,7 @@ function Cell({ row, col, cellState, onEdgeClick, rows, cols }) {
         onClick={() => onEdgeClick(row, col, "right")}
         isOuterEdge={col === cols - 1}
       />
-      <div style={styles.center}>
-        ({row}, {col})
-      </div>
+      <div style={styles.center}>{/* ({row}, {col}) */}</div>
     </div>
   );
 }

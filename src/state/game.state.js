@@ -21,6 +21,7 @@ const PLAYER_2 = 1;
 class GameState {
   rowsCount = 0;
   colsCount = 0;
+  cellsCount = ROWS_COUNT * COLS_COUNT;
   state = [];
   players = [
     { name: "unknown", score: 0, color: PLAYER_1_COLOR },
@@ -74,6 +75,7 @@ class GameState {
 
     // update player score
     if (cellClosedCount > 0) {
+      this.cellsCount -= cellClosedCount;
       this.players[this.currentPlayer].score += cellClosedCount;
       return true;
     }
