@@ -1,10 +1,21 @@
 // src/Edge.js
 import React from "react";
 
-function Edge({ position, color, onClick }) {
+const DEFAULT_EDGE_SIZE = 3;
+
+function Edge({ position, color, onClick, isOuterEdge }) {
+  const size = isOuterEdge
+    ? `${DEFAULT_EDGE_SIZE * 2}px`
+    : `${DEFAULT_EDGE_SIZE}px`;
   return (
     <div
-      style={{ ...styles.edge, ...styles[position], backgroundColor: color }}
+      style={{
+        ...styles.edge,
+        ...styles[position],
+        backgroundColor: color,
+        [position === "top" || position === "bottom" ? "height" : "width"]:
+          size,
+      }}
       onClick={onClick}
     ></div>
   );
@@ -19,25 +30,21 @@ const styles = {
     top: 0,
     left: 0,
     right: 0,
-    height: "5px",
   },
   bottom: {
     bottom: 0,
     left: 0,
     right: 0,
-    height: "5px",
   },
   left: {
     top: 0,
     bottom: 0,
     left: 0,
-    width: "5px",
   },
   right: {
     top: 0,
     bottom: 0,
     right: 0,
-    width: "5px",
   },
 };
 
